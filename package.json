@@ -1,0 +1,31 @@
+{
+  "name": "webforums",
+  "version": "1.0.0",
+  "description": "This branch hosts the Node.js version of the forum software.",
+  "main": "./src/index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "typeorm": "^0.2.34"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.12",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^4.3.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"tsc": "tsc",
+    "start": "tsc && node ./bin/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GamerGambit/WebForums.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GamerGambit/WebForums/issues"
+  },
+  "homepage": "https://github.com/GamerGambit/WebForums#readme"
+}
