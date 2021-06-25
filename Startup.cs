@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using WebForums.Data;
 
 namespace WebForums
 {
@@ -28,6 +30,9 @@ namespace WebForums
 			{
 				configuration.RootPath = "ClientApp/build";
 			});
+
+		    services.AddDbContext<WebForumsContext>(options =>
+		            options.UseSqlServer(Configuration.GetConnectionString("WebForumsContext")));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
