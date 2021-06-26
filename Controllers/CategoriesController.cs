@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,9 +23,14 @@ namespace WebForums.Controllers
 
         // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
+        public async Task<ActionResult<IEnumerable>> GetCategory()
         {
-            return await _context.Category.ToListAsync();
+            return await _context.Category.Include(c => c.Forums).Select(c => new
+            {
+                c.ID,
+                c.Title,
+                Forums = c.Forums.Select(f => new { f.ID, f.Title, f.Description })
+            }).ToListAsync();
         }
 
         // GET: api/Categories/5
