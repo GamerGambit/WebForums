@@ -25,7 +25,7 @@ namespace WebForums.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable>> GetCategory()
         {
-            return await _context.Category.Include(c => c.Forums).Select(c => new
+            return await _context.Category.Select(c => new
             {
                 c.ID,
                 c.Title,

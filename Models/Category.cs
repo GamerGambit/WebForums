@@ -6,6 +6,6 @@ namespace WebForums.Models
 	{
 		public int ID { get; set; }
 		public string Title { get; set; }
-		public List<Forum> Forums { get; set; }
+		public virtual ICollection<Forum> Forums { get; set; }
 	}
 }
