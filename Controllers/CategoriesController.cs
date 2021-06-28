@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,13 +23,19 @@ namespace WebForums.Controllers
 
         // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable>> GetCategory()
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
         {
-            return await _context.Category.Select(c => new
+            // System.Text.Json cannot serialize `Category.Forums` without dying from cyclic references from `Forum.Category`, so remove null the reference.
+            return await _context.Category.Select(c => new Category
             {
-                c.ID,
-                c.Title,
-                Forums = c.Forums.Select(f => new { f.ID, f.Title, f.Description })
+                ID = c.ID,
+                Title = c.Title,
+                Forums = c.Forums.Select(f => new Forum
+                {
+                    ID = f.ID,
+                    Title = f.Title,
+                    Description = f.Description
+                }).ToList()
             }).ToListAsync();
         }
 
@@ -37,7 +43,18 @@ namespace WebForums.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-            var category = await _context.Category.FindAsync(id);
+            // System.Text.Json cannot serialize `Category.Forums` without dying from cyclic references from `Forum.Category`, so remove null the reference.
+            var category = await _context.Category.Select(c => new Category
+            {
+                ID = c.ID,
+                Title = c.Title,
+                Forums = c.Forums.Select(f => new Forum
+				{
+                    ID = f.ID,
+                    Title = f.Title,
+                    Description = f.Description
+				}).ToList()
+            }).FirstOrDefaultAsync(c => c.ID == id);
 
             if (category == null)
             {

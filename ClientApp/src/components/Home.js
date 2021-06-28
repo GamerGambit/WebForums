@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Category } from './Category';
 
 export class Home extends Component {
     static displayName = Home.name;
@@ -15,17 +16,9 @@ export class Home extends Component {
 
     static FormatCategories(categories) {
         return (
-            <table className="table">
-                {categories.map(category =>
-                    <>
-                        <thead><tr key={"c" + category.id.toString()}><th> {category.title}</th></tr></thead>
-                    <tbody>
-                        {category.forums.map(forum =>
-                            <tr><td key={"f" + forum.id.toString()}>{forum.title}</td></tr>
-                        )}
-                    </tbody></>
-                )}
-            </table>
+            categories.map((category, index) =>
+                <Category category={category} key={index} />
+            )
         );
     }
 
@@ -38,7 +31,6 @@ export class Home extends Component {
 
     async fetchCategories() {
         const response = await fetch("api/categories");
-        console.log(response);
         const data = await response.json();
         this.setState({ categories: data, loading: false });
 	}
