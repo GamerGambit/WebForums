@@ -1,0 +1,23 @@
+﻿@page "/"
+@using WebForums.Shared
+@inject HttpClient Http
+
+@if (categories == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	@foreach (var category in categories)
+	{
+		<Category CategoryData=@category />
+	}
+}
+
+@code {
+	private CategoryVM[] categories;
+	protected override async Task OnInitializedAsync()
+	{
+		categories = await Http.GetFromJsonAsync<CategoryVM[]>("/api/categories");
+	}
+}

@@ -1,0 +1,51 @@
+﻿@page "/category/{categoryId:int}"
+@using WebForums.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@if (CategoryData == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<table class="table-bordered mb-2">
+		<thead>
+			<tr>
+				<th><NavLink href=@($"/category/{CategoryData.ID}")>@CategoryData.Title</NavLink></th>
+			</tr>
+		</thead>
+
+		<tbody>
+			@foreach (var forum in CategoryData.Forums)
+			{
+				<tr>
+					<td>
+						<p class="p-0 m-0">@forum.Title</p>
+						<small class="text-muted">@forum.Description</small>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	[Parameter]
+	public CategoryVM CategoryData { get; set; }
+
+	[Parameter]
+	public int? CategoryId { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (CategoryData == null && CategoryId.HasValue)
+		{
+			CategoryData = await Http.GetFromJsonAsync<CategoryVM>($"/api/categories/{CategoryId.Value}");
+		}
+		else if (CategoryData == null && !CategoryId.HasValue)
+		{
+			NavigationManager.NavigateTo("404");
+		}
+	}
+}
