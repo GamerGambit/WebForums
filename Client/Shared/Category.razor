@@ -1,0 +1,27 @@
+﻿@using WebForums.Shared
+@inject HttpClient Http
+
+<table class="table-bordered mb-2">
+	<thead>
+		<tr>
+			<th><NavLink href=@($"/category/{CategoryData.ID}")>@CategoryData.Title</NavLink></th>
+		</tr>
+	</thead>
+
+	<tbody>
+		@foreach (var forum in CategoryData.Forums)
+		{
+			<tr>
+				<td>
+					<p class="p-0 m-0">@forum.Title</p>
+					<small class="text-muted">@forum.Description</small>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+@code {
+	[Parameter]
+	public CategoryVM CategoryData { get; set; }
+}
