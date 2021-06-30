@@ -6,6 +6,6 @@ namespace WebForums.Shared
 	{
 		public int ID { get; set; }
 		public string Title { get; set; }
-		public ICollection<ForumVM> Forums { get; set; }
+		public ICollection<ForumShortVM> ForumShorts { get; set; }
 	}
 }

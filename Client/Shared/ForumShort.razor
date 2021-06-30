@@ -1,0 +1,21 @@
+﻿@using WebForums.Shared
+@inject HttpClient Http
+
+<tr>
+	<td>
+		<p class="p-0 m-0">@ForumShortData.Title</p>
+		<small class="text-muted">@ForumShortData.Description</small>
+	</td>
+	@if (ForumShortData.LatestThreadPostedIn != null)
+	{
+		<td>
+			<p class="p-0 m-0">@ForumShortData.LatestThreadPostedIn.Title</p>
+			<small class="text-muted">@ForumShortData.LatestThreadPostedIn.LastestPost.Poster.Username</small>
+		</td>
+	}
+</tr>
+
+@code {
+	[Parameter]
+	public ForumShortVM ForumShortData { get; set; }
+}

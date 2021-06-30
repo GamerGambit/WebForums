@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using WebForums.Server.Data;
 using WebForums.Server.Models;
+using WebForums.Shared;
 
 namespace WebForums.Controllers
 {
@@ -23,36 +24,66 @@ namespace WebForums.Controllers
 
         // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
+        public async Task<ActionResult<IEnumerable<CategoryVM>>> GetCategory()
         {
-            // System.Text.Json cannot serialize `Category.Forums` without dying from cyclic references from `Forum.Category`, so remove null the reference.
-            return await _context.Category.Select(c => new Category
+            // System.Text.Json cannot serialize `Category.Forums` without dying from cyclic references from `Forum.Category`, so null the reference.
+            return await _context.Category.Select(c => new CategoryVM
             {
                 ID = c.ID,
                 Title = c.Title,
-                Forums = c.Forums.Select(f => new Forum
+                ForumShorts = c.Forums.Select(f => new ForumShortVM
                 {
                     ID = f.ID,
                     Title = f.Title,
-                    Description = f.Description
+                    Description = f.Description,
+                    LatestThreadPostedIn = f.Threads.OrderBy(t => t.Posts.OrderBy(p => p.Created).Last()).Select(t => new ThreadShortVM
+					{
+                        ID = t.ID,
+                        Title = t.Title,
+                        LastestPost = t.Posts.OrderBy(p => p.Created).Select(p => new PostShortVM
+                        {
+                            ID = p.ID,
+                            Poster = new UserVM
+                            {
+                                ID = p.Poster.ID,
+                                Username = p.Poster.Username
+                            },
+                            Created = p.Created
+                        }).Last()
+					}).LastOrDefault()
                 }).ToList()
             }).ToListAsync();
         }
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<CategoryVM>> GetCategory(int id)
         {
-            // System.Text.Json cannot serialize `Category.Forums` without dying from cyclic references from `Forum.Category`, so remove null the reference.
-            var category = await _context.Category.Select(c => new Category
+            // System.Text.Json cannot serialize `Category.Forums` without dying from cyclic references from `Forum.Category`, so null the reference.
+            var category = await _context.Category.Select(c => new CategoryVM
             {
                 ID = c.ID,
                 Title = c.Title,
-                Forums = c.Forums.Select(f => new Forum
+                ForumShorts = c.Forums.Select(f => new ForumShortVM
 				{
                     ID = f.ID,
                     Title = f.Title,
-                    Description = f.Description
+                    Description = f.Description,
+                    LatestThreadPostedIn = f.Threads.OrderBy(t => t.Posts.OrderBy(p => p.Created).Last()).Select(t => new ThreadShortVM
+					{
+                        ID = t.ID,
+                        Title = t.Title,
+                        LastestPost = t.Posts.OrderBy(p => p.Created).Select(p => new PostShortVM
+						{
+                            ID = p.ID,
+                            Poster = new UserVM
+							{
+                                ID = p.Poster.ID,
+                                Username = p.Poster.Username
+							},
+                            Created = p.Created
+						}).Last()
+					}).LastOrDefault()
 				}).ToList()
             }).FirstOrDefaultAsync(c => c.ID == id);
 

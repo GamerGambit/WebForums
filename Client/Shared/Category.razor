@@ -4,19 +4,14 @@
 <table class="table-bordered mb-2">
 	<thead>
 		<tr>
-			<th><NavLink href=@($"/category/{CategoryData.ID}")>@CategoryData.Title</NavLink></th>
+			<th colspan="2"><NavLink href=@($"/category/{CategoryData.ID}")>@CategoryData.Title</NavLink></th>
 		</tr>
 	</thead>
 
 	<tbody>
-		@foreach (var forum in CategoryData.Forums)
+		@foreach (var forumShort in CategoryData.ForumShorts)
 		{
-			<tr>
-				<td>
-					<p class="p-0 m-0">@forum.Title</p>
-					<small class="text-muted">@forum.Description</small>
-				</td>
-			</tr>
+			<ForumShort ForumShortData=@forumShort />
 		}
 	</tbody>
 </table>
