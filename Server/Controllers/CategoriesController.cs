@@ -17,17 +17,9 @@ namespace WebForums.Controllers
     {
         private readonly WebForumsContext _context;
 
-        public CategoriesController(WebForumsContext context)
-        {
-            _context = context;
-        }
-
-        // GET: api/Categories
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryVM>>> GetCategory()
-        {
-            // System.Text.Json cannot serialize `Category.Forums` without dying from cyclic references from `Forum.Category`, so null the reference.
-            return await _context.Category.Select(c => new CategoryVM
+        private IQueryable<CategoryVM> FetchCategoriesAsViewModels()
+		{
+            return _context.Category.Select(c => new CategoryVM
             {
                 ID = c.ID,
                 Title = c.Title,
@@ -37,7 +29,7 @@ namespace WebForums.Controllers
                     Title = f.Title,
                     Description = f.Description,
                     LatestThreadPostedIn = f.Threads.OrderBy(t => t.Posts.OrderBy(p => p.Created).Last()).Select(t => new ThreadShortVM
-					{
+                    {
                         ID = t.ID,
                         Title = t.Title,
                         LastestPost = t.Posts.OrderBy(p => p.Created).Select(p => new PostShortVM
@@ -50,9 +42,22 @@ namespace WebForums.Controllers
                             },
                             Created = p.Created
                         }).Last()
-					}).LastOrDefault()
+                    }).LastOrDefault()
                 }).ToList()
-            }).ToListAsync();
+            });
+        }
+
+        public CategoriesController(WebForumsContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/Categories
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CategoryVM>>> GetCategory()
+        {
+            // System.Text.Json cannot serialize `Category.Forums` without dying from cyclic references from `Forum.Category`, so null the reference.
+            return await FetchCategoriesAsViewModels().ToListAsync();
         }
 
         // GET: api/Categories/5
@@ -60,32 +65,7 @@ namespace WebForums.Controllers
         public async Task<ActionResult<CategoryVM>> GetCategory(int id)
         {
             // System.Text.Json cannot serialize `Category.Forums` without dying from cyclic references from `Forum.Category`, so null the reference.
-            var category = await _context.Category.Select(c => new CategoryVM
-            {
-                ID = c.ID,
-                Title = c.Title,
-                ForumShorts = c.Forums.Select(f => new ForumShortVM
-				{
-                    ID = f.ID,
-                    Title = f.Title,
-                    Description = f.Description,
-                    LatestThreadPostedIn = f.Threads.OrderBy(t => t.Posts.OrderBy(p => p.Created).Last()).Select(t => new ThreadShortVM
-					{
-                        ID = t.ID,
-                        Title = t.Title,
-                        LastestPost = t.Posts.OrderBy(p => p.Created).Select(p => new PostShortVM
-						{
-                            ID = p.ID,
-                            Poster = new UserVM
-							{
-                                ID = p.Poster.ID,
-                                Username = p.Poster.Username
-							},
-                            Created = p.Created
-						}).Last()
-					}).LastOrDefault()
-				}).ToList()
-            }).FirstOrDefaultAsync(c => c.ID == id);
+            var category = await FetchCategoriesAsViewModels().FirstOrDefaultAsync(c => c.ID == id);
 
             if (category == null)
             {
