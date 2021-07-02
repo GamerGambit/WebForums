@@ -1,4 +1,6 @@
-﻿namespace WebForums.Shared
+﻿using System.Collections.Generic;
+
+namespace WebForums.Shared
 {
 	public class ForumVM
 	{
@@ -6,6 +8,6 @@
 		public CategoryVM Category { get; set; }
 		public string Title { get; set; }
 		public string Description { get;set; }
-		public ThreadVM LatestThreadPostedIn { get; set; }
+		public ICollection<ThreadVM> Threads { get; set; }
 	}
 }
