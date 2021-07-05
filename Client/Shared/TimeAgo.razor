@@ -1,0 +1,23 @@
+﻿<p class="text-muted p-0 m-0"><a title="@Time.ToString(@"dd-MM-yyyy \a\t HH:mm")">@GetTimeAgo() ago</a></p>
+
+@code {
+	[Parameter]
+	public DateTime Time { get; set; }
+
+	private string GetTimeAgo()
+	{
+
+		return (DateTime.Now - Time) switch
+		{
+			{ TotalDays: > 365 } ts => $"{(int)Math.Floor(ts.TotalDays / 365)} year{(ts.TotalSeconds == 1 ? string.Empty : "s")}",
+			{ TotalDays: > 30 } ts => $"{(int)Math.Round(ts.TotalDays / 30)} month{(ts.TotalSeconds == 1 ? string.Empty : "s")}",
+			{ TotalDays: 1 } ts => "1 day",
+			{ TotalDays: < 1 } ts => $"{(int)Math.Round(ts.TotalHours)} hour{(ts.TotalHours == 1 ? string.Empty : "s")}",
+			{ TotalHours: 1 } ts => "1 hour",
+			{ TotalHours: < 1 } ts => $"{(int)Math.Round(ts.TotalMinutes)} minute{(ts.TotalMinutes == 1 ? string.Empty : "s")}",
+			{ TotalMinutes: 1 } ts => "1 minutes",
+			{ TotalMinutes: < 1 } ts => $"{(int)Math.Round(ts.TotalSeconds)} second{(ts.TotalSeconds == 1 ? string.Empty : "s")}",
+			_ => string.Empty
+		};
+	}
+}
