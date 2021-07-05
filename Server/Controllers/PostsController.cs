@@ -10,6 +10,7 @@ using WebForums.Server.Models;
 
 namespace WebForums.Controllers
 {
+    /*
 	[Route("api/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
@@ -105,4 +106,5 @@ namespace WebForums.Controllers
             return _context.Post.Any(e => e.ID == id);
         }
     }
+    */
 }

@@ -22,12 +22,14 @@ namespace WebForums.Controllers
             _context = context;
         }
 
+        /*
         // GET: api/Threads
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Thread>>> GetThread()
         {
             return await _context.Thread.ToListAsync();
         }
+        */
 
         // GET: api/Threads/5
         [HttpGet("{id}")]
@@ -59,6 +61,7 @@ namespace WebForums.Controllers
             return thread;
         }
 
+        /*
         // PUT: api/Threads/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -121,5 +124,6 @@ namespace WebForums.Controllers
         {
             return _context.Thread.Any(e => e.ID == id);
         }
+        */
     }
 }

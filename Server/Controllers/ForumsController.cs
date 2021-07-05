@@ -52,12 +52,14 @@ namespace WebForums.Controllers
             _context = context;
         }
 
+        /*
         // GET: api/Forums
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ForumVM>>> GetForum()
         {
             return await FetchForumsAsViewModels().ToListAsync();
         }
+        */
 
         // GET: api/Forums/5
         [HttpGet("{id}")]
@@ -73,6 +75,7 @@ namespace WebForums.Controllers
             return forum;
         }
 
+        /*
         // PUT: api/Forums/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -135,5 +138,6 @@ namespace WebForums.Controllers
         {
             return _context.Forum.Any(e => e.ID == id);
         }
+        */
     }
 }
