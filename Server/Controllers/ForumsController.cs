@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using WebForums.Server.Data;
 using WebForums.Server.Models;
+using WebForums.Shared;
 
 namespace WebForums.Controllers
 {
@@ -16,6 +17,37 @@ namespace WebForums.Controllers
     {
         private readonly WebForumsContext _context;
 
+        private IQueryable<ForumVM> FetchForumsAsViewModels()
+		{
+            return _context.Forum.Select(f => new ForumVM
+            {
+                ID = f.ID,
+                Title = f.Title,
+                Description = f.Description,
+                Threads = f.Threads.Select(t => new ThreadVM
+				{
+                    ID = t.ID,
+                    Title = t.Title,
+                    Starter = new UserVM
+                    {
+                        ID = t.Starter.ID,
+                        Username = t.Starter.Username
+                    },
+                    LastestPost = t.Posts.OrderBy(p => p.Created).Select(p => new PostVM
+					{
+                        ID = p.ID,
+                        Poster = new UserVM
+                        {
+                            ID = p.Poster.ID,
+                            Username = p.Poster.Username
+                        },
+                        Created = p.Created,
+                        Content = p.Content
+					}).LastOrDefault()
+				}).ToList()
+            });
+		}
+
         public ForumsController(WebForumsContext context)
         {
             _context = context;
@@ -23,16 +55,16 @@ namespace WebForums.Controllers
 
         // GET: api/Forums
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Forum>>> GetForum()
+        public async Task<ActionResult<IEnumerable<ForumVM>>> GetForum()
         {
-            return await _context.Forum.ToListAsync();
+            return await FetchForumsAsViewModels().ToListAsync();
         }
 
         // GET: api/Forums/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Forum>> GetForum(int id)
+        public async Task<ActionResult<ForumVM>> GetForum(int id)
         {
-            var forum = await _context.Forum.FindAsync(id);
+            var forum = await FetchForumsAsViewModels().FirstOrDefaultAsync(f => f.ID == id);
 
             if (forum == null)
             {

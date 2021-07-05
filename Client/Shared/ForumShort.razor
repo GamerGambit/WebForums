@@ -3,7 +3,7 @@
 
 <tr>
 	<td>
-		<p class="p-0 m-0">@ForumShortData.Title</p>
+		<p class="p-0 m-0"><NavLink href=@($"/forum/{ForumShortData.ID}")>@ForumShortData.Title</NavLink></p>
 		<small class="text-muted">@ForumShortData.Description</small>
 	</td>
 	@if (ForumShortData.LatestThreadPostedIn != null)

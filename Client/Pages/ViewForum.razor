@@ -1,0 +1,62 @@
+﻿@page "/forum/{forumId:int}"
+@using WebForums.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@if (ForumData == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<table class="table-bordered">
+		<thead>
+			<tr>
+				<th>Title/Thread Starter</th>
+				<th>Latest Post</th>
+				<th>Replies</th>
+				<th>Views</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var thread in ForumData.Threads)
+			{
+				<tr>
+					<td>
+						<p>@thread.Title</p>
+						<small class="text-muted">@thread.Starter.Username</small>
+					</td>
+					<td>
+						<p class="p-0 m-0">@thread.LastestPost.Poster.Username</p>
+						[TODO: add timeago]
+					</td>
+					<td>
+						[TODO: add # replies to viewmodel]
+					</td>
+					<td>
+						[TODO: add # views]
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private ForumVM ForumData { get; set; }
+
+	[Parameter]
+	public int? ForumId { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (ForumId.HasValue)
+		{
+			ForumData = await Http.GetFromJsonAsync<ForumVM>($"/api/forums/{ForumId.Value}");
+		}
+		else
+		{
+			NavigationManager.NavigateTo("404");
+		}
+	}
+}
