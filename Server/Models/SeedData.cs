@@ -251,8 +251,8 @@ namespace WebForums.Server.Models
 
 				new Post
 				{
-					Thread = pwdynhw,
-					Poster = pwdynhw.Starter,
+					Thread = mapwdynhw,
+					Poster = mapwdynhw.Starter,
 					Content = "Welcome to the Mapping \"What Do You Need Help With\" thread! Post your current failures here."
 				},
 
