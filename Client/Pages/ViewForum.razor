@@ -21,22 +21,7 @@ else
 		<tbody>
 			@foreach (var thread in ForumData.Threads)
 			{
-				<tr>
-					<td>
-						<p>@thread.Title</p>
-						<small class="text-muted">@thread.Starter.Username</small>
-					</td>
-					<td>
-						<p class="p-0 m-0">@thread.LastestPost.Poster.Username</p>
-						<TimeAgo Time=thread.LastestPost.Created />
-					</td>
-					<td>
-						[TODO: add # replies to viewmodel]
-					</td>
-					<td>
-						[TODO: add # views]
-					</td>
-				</tr>
+				<ThreadShort ThreadData=thread />
 			}
 		</tbody>
 	</table>

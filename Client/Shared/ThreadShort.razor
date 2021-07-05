@@ -1,0 +1,23 @@
+﻿@using WebForums.Shared
+
+<tr>
+	<td>
+		<p>@ThreadData.Title</p>
+		<small class="text-muted">@ThreadData.Starter.Username</small>
+	</td>
+	<td>
+		<p class="p-0 m-0">@ThreadData.LastestPost.Poster.Username</p>
+		<TimeAgo Time=ThreadData.LastestPost.Created />
+	</td>
+	<td>
+		[TODO: add # replies to viewmodel]
+	</td>
+	<td>
+		[TODO: add # views]
+	</td>
+</tr>
+
+@code {
+	[Parameter]
+	public ThreadShortVM ThreadData { get; set; }
+}
