@@ -8,6 +8,6 @@ namespace WebForums.Shared
 		public CategoryVM Category { get; set; }
 		public string Title { get; set; }
 		public string Description { get;set; }
-		public ICollection<ThreadVM> Threads { get; set; }
+		public IEnumerable<ThreadShortVM> Threads { get; set; }
 	}
 }

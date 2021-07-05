@@ -43,7 +43,7 @@ namespace WebForums.Controllers
                             Created = p.Created
                         }).Last()
                     }).LastOrDefault()
-                }).ToList()
+                })
             });
         }
 

@@ -24,7 +24,7 @@ namespace WebForums.Controllers
                 ID = f.ID,
                 Title = f.Title,
                 Description = f.Description,
-                Threads = f.Threads.Select(t => new ThreadVM
+                Threads = f.Threads.Select(t => new ThreadShortVM
 				{
                     ID = t.ID,
                     Title = t.Title,
@@ -33,7 +33,7 @@ namespace WebForums.Controllers
                         ID = t.Starter.ID,
                         Username = t.Starter.Username
                     },
-                    LastestPost = t.Posts.OrderBy(p => p.Created).Select(p => new PostVM
+                    LastestPost = t.Posts.OrderBy(p => p.Created).Select(p => new PostShortVM
 					{
                         ID = p.ID,
                         Poster = new UserVM
@@ -41,10 +41,9 @@ namespace WebForums.Controllers
                             ID = p.Poster.ID,
                             Username = p.Poster.Username
                         },
-                        Created = p.Created,
-                        Content = p.Content
-					}).LastOrDefault()
-				}).ToList()
+                        Created = p.Created
+					}).Last()
+				})
             });
 		}
 
