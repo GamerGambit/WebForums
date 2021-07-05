@@ -16,13 +16,15 @@ else
 	private CategoryVM CategoryData { get; set; }
 
 	[Parameter]
-	public int? CategoryId { get; set; }
+	public int CategoryId { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
-		if (CategoryId.HasValue)
+		var res = await Http.GetAsync($"/api/categories/{CategoryId}");
+
+		if (res.IsSuccessStatusCode)
 		{
-			CategoryData = await Http.GetFromJsonAsync<CategoryVM>($"/api/categories/{CategoryId.Value}");
+			CategoryData = await res.Content.ReadFromJsonAsync<CategoryVM>();
 		}
 		else 
 		{

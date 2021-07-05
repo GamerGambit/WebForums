@@ -35,9 +35,11 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		if (ForumId.HasValue)
+		var res = await Http.GetAsync($"/api/forums/{ForumId}");
+
+		if (res.IsSuccessStatusCode)
 		{
-			ForumData = await Http.GetFromJsonAsync<ForumVM>($"/api/forums/{ForumId.Value}");
+			ForumData = await res.Content.ReadFromJsonAsync<ForumVM>();
 		}
 		else
 		{
