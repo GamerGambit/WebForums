@@ -2,7 +2,7 @@
 
 <tr>
 	<td>
-		<p>@ThreadData.Title</p>
+		<p><NavLink href=@($"/thread/{ThreadData.ID}")>@ThreadData.Title</NavLink></p>
 		<small class="text-muted">@ThreadData.Starter.Username</small>
 	</td>
 	<td>

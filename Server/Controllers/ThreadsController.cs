@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using WebForums.Server.Data;
 using WebForums.Server.Models;
+using WebForums.Shared;
 
 namespace WebForums.Controllers
 {
@@ -30,9 +31,25 @@ namespace WebForums.Controllers
 
         // GET: api/Threads/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Thread>> GetThread(int id)
+        public async Task<ActionResult<ThreadVM>> GetThread(int id)
         {
-            var thread = await _context.Thread.FindAsync(id);
+            var thread = await _context.Thread.Select(t => new ThreadVM
+            {
+                ID = t.ID,
+                Title = t.Title,
+                Posts = t.Posts.Select(p => new PostVM
+                {
+                    ID = p.ID,
+                    Created = p.Created,
+                    Content = p.Content,
+                    Update = p.Update,
+                    Poster = new UserVM
+                    {
+                        ID = p.Poster.ID,
+                        Username = p.Poster.Username
+                    }
+                })
+            }).FirstOrDefaultAsync(t => t.ID == id);
 
             if (thread == null)
             {

@@ -8,7 +8,7 @@
 	@if (ForumShortData.LatestThreadPostedIn != null)
 	{
 		<td>
-			<p class="p-0 m-0">@ForumShortData.LatestThreadPostedIn.Title</p>
+			<p class="p-0 m-0"><NavLink href=@($"/thread/{ForumShortData.LatestThreadPostedIn.ID}")>@ForumShortData.LatestThreadPostedIn.Title</NavLink></p>
 			<small class="text-muted">@ForumShortData.LatestThreadPostedIn.LastestPost.Poster.Username</small>
 			<TimeAgo Time=ForumShortData.LatestThreadPostedIn.LastestPost.Created />
 		</td>

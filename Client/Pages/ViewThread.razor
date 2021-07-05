@@ -1,0 +1,39 @@
+﻿@page "/thread/{threadId:int}"
+@using WebForums.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@if (ThreadData == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<table class="table-bordered">
+		@foreach (var post in ThreadData.Posts.OrderBy(p => p.Created))
+		{
+			<Post PostData=post />
+		}
+	</table>
+}
+
+@code {
+	private ThreadVM ThreadData { get; set; }
+
+	[Parameter]
+	public int ThreadId { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		var res = await Http.GetAsync($"/api/threads/{ThreadId}");
+
+		if (res.IsSuccessStatusCode)
+		{
+			ThreadData = await res.Content.ReadFromJsonAsync<ThreadVM>();
+		}
+		else
+		{
+			NavigationManager.NavigateTo("404");
+		}
+	}
+}

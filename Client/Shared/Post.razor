@@ -1,0 +1,11 @@
+﻿@using WebForums.Shared;
+
+<tr>
+	<td>@PostData.Poster.Username</td>
+	<td>@PostData.Content</td>
+</tr>
+
+@code {
+	[Parameter]
+	public PostVM PostData { get; set; }
+}
