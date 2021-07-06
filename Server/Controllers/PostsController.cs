@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using WebForums.Server.Data;
 using WebForums.Server.Models;
+using WebForums.Shared;
 
 namespace WebForums.Controllers
 {
-    /*
 	[Route("api/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
@@ -21,7 +22,8 @@ namespace WebForums.Controllers
         {
             _context = context;
         }
-
+        
+        /*
         // GET: api/Posts
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Post>>> GetPost()
@@ -73,18 +75,52 @@ namespace WebForums.Controllers
 
             return NoContent();
         }
+        */
 
         // POST: api/Posts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Post>> PostPost(Post post)
+        public async Task<ActionResult<PostVM>> PostPost(PostForm postForm)
         {
+            var thread = await _context.Thread.FindAsync(postForm.ThreadId);
+
+            if (thread == null)
+			{
+                return BadRequest();
+			}
+
+            var post = new Post
+            {
+                Content = postForm.Content,
+                Created = DateTime.Now,
+                Poster = await _context.User.OrderBy(u => Guid.NewGuid()).FirstAsync(),
+                Thread = thread
+            };
+
             _context.Post.Add(post);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPost", new { id = post.ID }, post);
+            var postVM = new PostVM()
+            {
+                ID = post.ID,
+                Content = post.Content,
+                Created = post.Created,
+                Poster = new UserVM
+                {
+                    ID = post.Poster.ID,
+                    Username = post.Poster.Username
+                }
+            };
+
+
+            return new ContentResult
+            {
+                StatusCode = 201,
+                Content = System.Text.Json.JsonSerializer.Serialize(postVM)
+            };
         }
 
+        /*
         // DELETE: api/Posts/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(int id)
@@ -105,6 +141,6 @@ namespace WebForums.Controllers
         {
             return _context.Post.Any(e => e.ID == id);
         }
+        */
     }
-    */
 }

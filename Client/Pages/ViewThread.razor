@@ -14,14 +14,35 @@ else
 		{
 			<Post PostData=post />
 		}
+
+		<tr>
+			<td>Reply:</td>
+			<td>
+				<EditForm Model="@postForm" OnValidSubmit="@HandleValidSubmit">
+					<DataAnnotationsValidator />
+					<ValidationSummary />
+					<InputTextArea id="content" @bind-Value="postForm.Content"></InputTextArea>
+					<button type="submit">Post</button>
+				</EditForm>
+			</td>
+		</tr>
 	</table>
 }
 
 @code {
+	private PostForm postForm;
 	private ThreadVM ThreadData { get; set; }
 
 	[Parameter]
 	public int ThreadId { get; set; }
+
+	protected override void OnInitialized()
+	{
+		postForm = new()
+		{
+			ThreadId = ThreadId
+		};
+	}
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -34,6 +55,19 @@ else
 		else
 		{
 			NavigationManager.NavigateTo("404");
+		}
+	}
+
+	private async Task HandleValidSubmit()
+	{
+		var res = await Http.PostAsJsonAsync<PostForm>($"/api/posts/", postForm);
+
+		if (res.IsSuccessStatusCode)
+		{
+			postForm.Content = string.Empty;
+
+			var post = await res.Content.ReadFromJsonAsync<PostVM>();
+			ThreadData.Posts = ThreadData.Posts.Append(post);
 		}
 	}
 }
