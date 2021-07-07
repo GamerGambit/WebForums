@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -92,18 +93,47 @@ namespace WebForums.Controllers
 
             return NoContent();
         }
+        */
 
         // POST: api/Threads
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Thread>> PostThread(Thread thread)
+        public async Task<ActionResult<Thread>> PostThread(NewThreadForm threadForm)
         {
-            _context.Thread.Add(thread);
+            var forum = await _context.Forum.FindAsync(threadForm.ForumID);
+
+            if (forum == null)
+                return BadRequest();
+
+            var starter = await _context.User.OrderBy(u => Guid.NewGuid()).FirstAsync();
+
+            var entry = await _context.AddAsync(new Thread
+            {
+                Forum = forum,
+                Title = threadForm.ThreadTitle,
+                Starter = starter,
+            });
+
+            var thread = entry.Entity;
+
+            await _context.Post.AddAsync(new Post
+            {
+                Created = DateTime.Now,
+                Poster = starter,
+                Thread = thread,
+                Content = threadForm.PostContent
+            });
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetThread", new { id = thread.ID }, thread);
+            return new ContentResult
+            {
+                StatusCode = 201,
+                Content = thread.ID.ToString()
+            };
         }
 
+        /*
         // DELETE: api/Threads/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteThread(int id)

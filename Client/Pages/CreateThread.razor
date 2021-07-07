@@ -1,0 +1,56 @@
+﻿@page "/forum/{forumId:int}/newthread"
+@using WebForums.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@threadForm" OnValidSubmit="@HandleValidSubmit">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+
+	<div>
+		<label for="threadTitle">Thread Title: </label>
+		<InputText id="threadTitle" @bind-Value="threadForm.ThreadTitle" />
+		<ValidationMessage For="() => threadForm.ThreadTitle" />
+	</div>
+
+	<div>
+		<label for="postContent">Content: </label>
+		<InputTextArea id="postContent" @bind-Value="threadForm.PostContent"></InputTextArea>
+		<ValidationMessage For="() => threadForm.PostContent" />
+	</div>
+	<button type="submit">Post</button>
+</EditForm>
+
+@code {
+	private NewThreadForm threadForm;
+
+	[Parameter]
+	public int ForumId { get; set; }
+
+	protected override void OnInitialized()
+	{
+		threadForm = new()
+		{
+			ForumID = ForumId
+		};
+	}
+
+	/*
+	protected override async Task OnInitializedAsync()
+	{
+		// TODO check if the forum exists without pulling all the thread data
+		// Might have to make a new api
+	}
+	*/
+
+	private async Task HandleValidSubmit()
+	{
+		var res = await Http.PostAsJsonAsync<NewThreadForm>($"/api/threads/", threadForm);
+
+		if (res.IsSuccessStatusCode)
+		{
+			var threadId = await res.Content.ReadFromJsonAsync<int>();
+			NavigationManager.NavigateTo($"/thread/{threadId}");
+		}
+	}
+}
