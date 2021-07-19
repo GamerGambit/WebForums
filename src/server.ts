@@ -1,5 +1,6 @@
 import * as express from "express";
 import { createConnection } from "typeorm"
+import * as path from "path"
 
 const app = express();
 app.use(express.json());
@@ -10,7 +11,7 @@ createConnection()
 		console.log("Connection to database failed: " + reason);
 		process.exit(1);
 	});
-
-app.get("*", (req, res) => res.status(200).json("success"));
+app.use(express.static(path.join(__dirname, "../public")))
+app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "../public/index.html")));
 
 app.listen(3000, () => console.log("Server listening on port 3000."));
