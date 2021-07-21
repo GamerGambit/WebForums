@@ -1,15 +1,19 @@
 import React, { Component } from "react";
-import { Container } from "reactstrap";
+import { Navbar } from "react-bootstrap";
 
 export class Layout extends Component {
     static diplayName = Layout.name;
 
     render(){
         return (
-            <div>
-                <Container>
+            <div className="page">
+                <Navbar className="top-row pl-4">
+                    <a className="navbar-brand" href="">WebForums</a>
+                </Navbar>
+
+                <div className="content px-4">
                     {this.props.children}
-                </Container>
+                </div>
             </div>
         );
     }
