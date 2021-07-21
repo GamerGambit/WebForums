@@ -1,0 +1,33 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build",
+			"type": "shell",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOn": [
+				"Build Client",
+				"Build Server"
+			]
+		},
+		{
+			"label": "Build Client",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"parcel",
+				"build",
+				"./src/index.html"
+			]
+		},
+		{
+			"label": "Build Server",
+			"type": "typescript",
+			"tsconfig": "tsconfig.json",
+			"problemMatcher": ["$tsc"]
+		}
+	]
+}
