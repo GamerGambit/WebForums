@@ -1,6 +1,7 @@
 import * as express from "express";
 import { createConnection } from "typeorm"
 import * as path from "path"
+import apiController from "./controllers/api.controller";
 
 const app = express();
 app.use(express.json());
@@ -27,6 +28,7 @@ createConnection({
 		process.exit(1);
 	});
 app.use(express.static(path.join(__dirname, "../dist")));
+app.use("/api", apiController);
 app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "../dist/index.html")));
 
 app.listen(3000, () => console.log("Server listening on port 3000."));
